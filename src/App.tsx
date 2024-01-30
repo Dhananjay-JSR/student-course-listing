@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { mockData } from "./utils/MockData";
+// import { mockData } from "./utils/MockData";
 import FuzzySearch from "fuzzy-search";
 import ReactLogo from "./assets/react.svg";
 import {
@@ -429,11 +429,11 @@ function App() {
     (state: RootState) => state.StudentProfile
   );
 
-  useEffect(() => {
-    if (FirstName == null) {
-      navigate("/");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (FirstName == null) {
+  //     navigate("/");
+  //   }
+  // }, []);
   return (
     <>
       <section className="  h-screen flex">

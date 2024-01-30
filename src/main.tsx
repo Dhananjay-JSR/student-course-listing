@@ -11,6 +11,8 @@ import "./index.css";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { mockData } from "./utils/MockData.ts";
+import { Provider } from "react-redux";
+import { store } from "./context/store.ts";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -76,7 +78,9 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    {/* <App /> */}
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      {/* <App /> */}
+      <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>
 );

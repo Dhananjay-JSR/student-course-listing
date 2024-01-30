@@ -10,6 +10,13 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  EnrollCourse,
+  UnEnrollCourse,
+  updateDetails,
+} from "./context/reducers/ProfileSlice";
+import type { RootState } from "./context/store";
 const comments = [
   "This is a great post!",
   "I really enjoyed this.",
@@ -36,6 +43,12 @@ export function CourseData() {
   const [FilteredData, setFilteredData] = useState(mockData);
 
   const [searchQuerry, setSearchQuerry] = useState("");
+
+  const { EnrolledCourses } = useSelector(
+    (state: RootState) => state.StudentProfile
+  );
+
+  const dispatch = useDispatch();
 
   return (
     <>
@@ -186,6 +199,13 @@ export function LoadingScreen() {
     (typeof ImageVariants)[number] | null
   >(null);
   const [showImagePicker, setShowImagePicker] = useState(false);
+  const [FirstName, setFirstName] = useState("");
+  const [LastName, setLastName] = useState("");
+  const [Email, setEmail] = useState("");
+  const [Address, setAddress] = useState("");
+  const [Phone, setPhone] = useState("");
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
   return (
     <section className="  h-screen flex flex-col">
@@ -255,18 +275,30 @@ export function LoadingScreen() {
           </div>
           <div>
             <input
+              onChange={(e) => {
+                setFirstName(e.target.value);
+              }}
+              value={FirstName}
               className=" bg-[#202425] rounded-sm text-gray-400 text-sm py-1.5 px-2"
               placeholder="Enter First Name"
             />
           </div>
           <div>
             <input
+              onChange={(e) => {
+                setLastName(e.target.value);
+              }}
+              value={LastName}
               className=" bg-[#202425] rounded-sm text-gray-400 text-sm py-1.5 px-2"
               placeholder="Enter Last Name"
             />
           </div>
           <div>
             <input
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+              value={Email}
               type="email"
               className=" bg-[#202425] rounded-sm text-gray-400 text-sm py-1.5 px-2"
               placeholder="Enter Email"
@@ -274,6 +306,10 @@ export function LoadingScreen() {
           </div>
           <div>
             <input
+              onChange={(e) => {
+                setAddress(e.target.value);
+              }}
+              value={Address}
               type="text"
               className=" bg-[#202425] rounded-sm text-gray-400 text-sm py-1.5 px-2"
               placeholder="Enter Address"
@@ -281,6 +317,10 @@ export function LoadingScreen() {
           </div>
           <div>
             <input
+              onChange={(e) => {
+                setPhone(e.target.value);
+              }}
+              value={Phone}
               type="tel"
               className=" bg-[#202425] rounded-sm text-gray-400 text-sm py-1.5 px-2"
               placeholder="Enter Phone"
@@ -288,6 +328,19 @@ export function LoadingScreen() {
           </div>
           <button
             onClick={() => {
+              console.log("Dispatching State");
+              dispatch(
+                updateDetails({
+                  Address: Address,
+                  Email: Email,
+                  EnrolledCourses: [],
+                  FirstName: FirstName,
+                  LastName: LastName,
+                  Phone: Phone,
+                  ProfImage: selectedImage,
+                })
+              );
+              console.log("Dispatched");
               navigate("/dashboard");
             }}
             className="mt-2 bg-[#323337] text-gray-300 px-2 py-1 rounded-md hover:scale-105 active:brightness-150 active:scale-125 transition-all"
@@ -320,6 +373,10 @@ function App() {
 
   const [selectedSideBar2, setSelectedSideBar2] =
     useState<(typeof NavBarData2)[number]>("Lesson 1.");
+
+  const { FirstName, ProfImage } = useSelector(
+    (state: RootState) => state.StudentProfile
+  );
   return (
     <>
       <section className="  h-screen flex">
@@ -540,24 +597,40 @@ function App() {
               </button>
               <div className="flex items-center gap-6 ml-6">
                 <span className="text-gray-400 select-none">
-                  Hey, <span className="text-white">Dhananjay</span>
+                  Hey,{" "}
+                  <span className="text-white">{FirstName ?? "untitled"}</span>
                 </span>
                 <button className="relative">
-                  <img
-                    src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
-                    alt="Hello"
-                    className="w-8 h-8 rounded-full "
-                  />
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="12"
-                    height="12"
-                    fill="currentColor"
-                    className="bi bi-plus-circle-fill absolute left-6 bottom-0 fill-yellow-300"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
-                  </svg>
+                  {ProfImage == null ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      className="bi bi-person w-8 h-8 rounded-full"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
+                    </svg>
+                  ) : (
+                    <>
+                      <img
+                        src={ProfImage}
+                        alt="Hello"
+                        className="w-8 h-8 rounded-full "
+                      />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        fill="currentColor"
+                        className="bi bi-plus-circle-fill absolute left-6 bottom-0 fill-yellow-300"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+                      </svg>
+                    </>
+                  )}
                 </button>
               </div>
             </div>
@@ -583,6 +656,10 @@ export function CouseDetailScreen() {
   };
   console.log(Course);
   const CourseData = Course.course;
+  const dispatch = useDispatch();
+  const { EnrolledCourses } = useSelector(
+    (state: RootState) => state.StudentProfile
+  );
   return (
     <div className="overflow-y-auto">
       <div className="bg-[#17181a] flex h-56 w-full p-2 rounded-lg">
@@ -615,15 +692,34 @@ export function CouseDetailScreen() {
                 <p className=" text-xl ">Duration</p>
                 <span className="text-gray-400">{CourseData.duration}</span>
               </div>
-              <button className="bg-blue-600  relative rounded-md font-medium px-2 py-1.5">
-                ENROLL NOW
-                {/* <span className="absolute -top-1.5 -right-1.5"> */}
-                {/* <span className="relative flex h-3 w-3"> */}
-                <span className="animate-[ping_3s_cubic-bezier(0,_0,_0.2,_1)_infinite] absolute inline-flex h-full w-full rounded-full left-0  top-0 bg-blue-300 opacity-75"></span>
-                {/* <span className="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span> */}
-                {/* </span> */}
-                {/* </span> */}
-              </button>
+              {EnrolledCourses.includes(CourseData.id) ? (
+                <>
+                  {" "}
+                  <button
+                    onClick={() => {
+                      dispatch(UnEnrollCourse(CourseData.id));
+                    }}
+                    className="bg-red-400 relative rounded-md font-medium px-2 py-1.5"
+                  >
+                    Unenroll
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => {
+                    dispatch(EnrollCourse(CourseData.id));
+                  }}
+                  className="bg-blue-600  relative rounded-md font-medium px-2 py-1.5"
+                >
+                  ENROLL NOW
+                  {/* <span className="absolute -top-1.5 -right-1.5"> */}
+                  {/* <span className="relative flex h-3 w-3"> */}
+                  <span className="animate-[ping_3s_cubic-bezier(0,_0,_0.2,_1)_infinite] absolute inline-flex h-full w-full rounded-full left-0  top-0 bg-blue-300 opacity-75"></span>
+                  {/* <span className="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span> */}
+                  {/* </span> */}
+                  {/* </span> */}
+                </button>
+              )}
             </div>
           </div>
         </div>

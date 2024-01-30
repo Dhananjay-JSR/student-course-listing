@@ -546,7 +546,7 @@ function FirstPreview() {
               <img
                 className="w-full rounded-2xl"
                 alt={`Study ${data.id}`}
-                src={`${data.courseImg},education,${index}`}
+                src={data.thumbnail}
               />
               <div className="text-white text-center text-lg">{data.name}</div>
               <div className="text-center text-sm text-white">

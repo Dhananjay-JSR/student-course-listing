@@ -8,7 +8,8 @@ export const mockData = [
     description:
       "Learn the basics of React Native development and build your first mobile app.",
     enrollmentStatus: "Open",
-    thumbnail: "your.image.here",
+    thumbnail:
+      "https://plus.unsplash.com/premium_photo-1681666713641-8d722b681edc?q=80&w=2110&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     duration: "8 weeks",
     schedule: "Tuesdays and Thursdays, 6:00 PM - 8:00 PM",
     location: "Online",
@@ -77,7 +78,8 @@ export const mockData = [
     description:
       "Dive deep into advanced Python concepts and programming techniques.",
     enrollmentStatus: "Closed",
-    thumbnail: "your.python.image",
+    thumbnail:
+      "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     duration: "12 weeks",
     schedule: "Mondays and Wednesdays, 7:00 PM - 9:00 PM",
     location: "Onsite",
@@ -126,12 +128,14 @@ export const mockData = [
     id: 3,
     name: "Data Science Fundamentals",
     likes: 0,
-    courseImg: "https://source.unsplash.com/random/900×700/?study",
+    courseImg:
+      "https://plus.unsplash.com/premium_photo-1671069848075-c9faefe4df18?q=80&w=1973&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     instructor: "Alex Rodriguez",
     description:
       "An introduction to the world of data science and its fundamental concepts.",
     enrollmentStatus: "Open",
-    thumbnail: "your.datascience.image",
+    thumbnail:
+      "https://plus.unsplash.com/premium_photo-1671069848075-c9faefe4df18?q=80&w=1973&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     duration: "10 weeks",
     schedule: "Tuesdays and Thursdays, 5:00 PM - 7:00 PM",
     location: "Online",
@@ -189,7 +193,8 @@ export const mockData = [
     description:
       "Hands-on workshop to learn mobile app design principles and tools.",
     enrollmentStatus: "InProgress",
-    thumbnail: "your.mobileappdesign.image",
+    thumbnail:
+      "https://images.unsplash.com/photo-1500989145603-8e7ef71d639e?q=80&w=2076&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     duration: "6 weeks",
     schedule: "Fridays, 4:00 PM - 6:00 PM",
     location: "Onsite",
@@ -242,7 +247,8 @@ export const mockData = [
     description:
       "An introductory course to machine learning algorithms and concepts.",
     enrollmentStatus: "Open",
-    thumbnail: "your.machinelearning.image",
+    thumbnail:
+      "https://images.unsplash.com/photo-1535982330050-f1c2fb79ff78?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     duration: "8 weeks",
     schedule: "Mondays and Wednesdays, 6:00 PM - 8:00 PM",
     location: "Online",
@@ -296,7 +302,8 @@ export const mockData = [
     description:
       "Deep dive into popular JavaScript frameworks like React, Angular, and Vue.",
     enrollmentStatus: "Closed",
-    thumbnail: "your.jsframeworks.image",
+    thumbnail:
+      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     duration: "10 weeks",
     schedule: "Thursdays, 7:00 PM - 9:00 PM",
     location: "Onsite",
@@ -408,7 +415,8 @@ export const mockData = [
     description:
       "Explore practical applications of artificial intelligence in various industries.",
     enrollmentStatus: "Open",
-    thumbnail: "your.aiapplications.image",
+    thumbnail:
+      "https://plus.unsplash.com/premium_photo-1671069848005-7231fc25703f?q=80&w=1973&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     duration: "12 weeks",
     schedule: "Fridays, 6:00 PM - 8:00 PM",
     location: "Onsite",
@@ -468,7 +476,8 @@ export const mockData = [
     description:
       "Learn the fundamentals of digital marketing and strategies for online success.",
     enrollmentStatus: "Closed",
-    thumbnail: "your.digitalmarketing.image",
+    thumbnail:
+      "https://images.unsplash.com/photo-1516534775068-ba3e7458af70?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     duration: "8 weeks",
     schedule: "Wednesdays, 6:30 PM - 8:30 PM",
     location: "Online",
@@ -534,7 +543,8 @@ export const mockData = [
     description:
       "Explore the fundamentals of blockchain technology and its practical applications.",
     enrollmentStatus: "Open",
-    thumbnail: "your.blockchain.image",
+    thumbnail:
+      "https://plus.unsplash.com/premium_photo-1661765677053-3e83770b25d7?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     duration: "6 weeks",
     schedule: "Thursdays, 7:30 PM - 9:30 PM",
     location: "Onsite",

@@ -1,6 +1,6 @@
 import express from "express";
 import asyncLock from "async-lock";
-import { mockData } from "../utils/MockData";
+import { mockData } from "../src/utils/MockData";
 const App = express();
 
 let DataStore = mockData.map((d) => {

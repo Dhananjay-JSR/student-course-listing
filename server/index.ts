@@ -15,8 +15,10 @@ let DataStore = mockData.map((d) => {
 
 const lock = new asyncLock();
 
-App.get("/course", (req, res) => {
-  res.json(DataStore);
+App.get("/course", async (req, res) => {
+  setTimeout(() => {
+    res.send(DataStore);
+  }, 2000);
 });
 
 async function AddLike(id: number) {
@@ -36,12 +38,14 @@ async function AddLike(id: number) {
 App.get("/course/:id", (req, res) => {
   const id = parseInt(req.params.id);
   const course = DataStore.find((c) => c.id === id);
-  res.json(course);
+  setTimeout(() => {
+    res.json(course);
+  }, 1200);
 });
 
 App.post("/like/:id", async (req, res) => {
   AddLike(parseInt(req.params.id));
-  res.send("Liked");
+  res.sendStatus(200);
 });
 
 App.listen(4000, () => {

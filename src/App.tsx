@@ -17,6 +17,8 @@ import {
   updateDetails,
 } from "./context/reducers/ProfileSlice";
 import type { RootState } from "./context/store";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { SERVER_URL } from "./utils/constant";
 const comments = [
   "This is a great post!",
   "I really enjoyed this.",
@@ -32,153 +34,202 @@ function getRandomComment() {
 }
 
 export function CourseData() {
-  const searcher = new FuzzySearch(
-    mockData,
-    ["name", "prerequisites", "instructor"],
-    {
-      caseSensitive: false,
-    }
-  );
+  // const searcher = new FuzzySearch(
+  //   mockData,
+  //   ["name", "prerequisites", "instructor"],
+  //   {
+  //     caseSensitive: false,
+  //   }
+  // );
 
-  const [FilteredData, setFilteredData] = useState(mockData);
+  const { isPending, error, data } = useQuery({
+    queryKey: ["courseData"],
+    refetchInterval: 1000,
+    queryFn: () => fetch(SERVER_URL + "/course").then((res) => res.json()),
+  });
 
   const [searchQuerry, setSearchQuerry] = useState("");
-
-  const { EnrolledCourses } = useSelector(
-    (state: RootState) => state.StudentProfile
-  );
-
-  const dispatch = useDispatch();
+  const [FilteredData, setFilteredData] = useState("");
 
   return (
     <>
       <section className="overflow-y-auto px-4">
-        <div>
-          <div className="flex">
-            <SectionTitle title={["Search", "tutorials"]} />
-            <WindowHandler />
+        {isPending ? (
+          <div className="grid grid-cols-3 gap-4">
+            {Array.from({
+              length: 20,
+            }).map((d) => {
+              return (
+                <div className=" border-blue-300 shadow rounded-md p-4 max-w-sm w-full mx-auto">
+                  <div className="animate-pulse flex space-x-4">
+                    <div className="rounded-full bg-slate-700 h-10 w-10"></div>
+                    <div className="flex-1 space-y-6 py-1">
+                      <div className="h-2 bg-slate-700 rounded"></div>
+                      <div className="space-y-3">
+                        <div className="grid grid-cols-3 gap-4">
+                          <div className="h-2 bg-slate-700 rounded col-span-2"></div>
+                          <div className="h-2 bg-slate-700 rounded col-span-1"></div>
+                        </div>
+                        <div className="h-2 bg-slate-700 rounded"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-          <div className="flex mt-2">
-            <input
-              value={searchQuerry}
-              onChange={(e) => {
-                const value = e.target.value;
-                setSearchQuerry(value);
-              }}
-              placeholder="Find the best tutorials "
-              className="w-full mr-4 bg-[#202425] rounded-lg pl-3 text-sm text-white"
-              type="text"
-            />
-            <button
-              onClick={() => {
-                setFilteredData(searcher.search(searchQuerry));
-              }}
-              className="px-3 bg-[#323337] text-gray-300 py-1.5 rounded-lg"
-            >
-              Search
-            </button>
-          </div>
-        </div>
-        <div className=" grid grid-cols-3">
-          {FilteredData.map((data, index) => {
-            return (
-              <div key={`${data.id}-${index}`} className="p-3 mb-4">
-                <img
-                  className="w-full rounded-2xl h-52"
-                  alt={`Study ${data.id}`}
-                  src={data.thumbnail}
-                />
-                <div className="text-white text-center text-lg">
-                  {data.name}
-                </div>
-                <div className="text-center text-sm text-white">
-                  {data.instructor}
-                </div>
-                <div className="flex my-2.5 justify-between items-center">
-                  <div className="bg-gradient-to-t from-violet-400 to-blue-500 w-fit px-2 py-0.5 rounded-lg font-medium">
-                    {data.duration}
-                  </div>
-                  <div>
-                    {data.enrollmentStatus == "Closed" ||
-                    data.enrollmentStatus == "InProgress" ? (
-                      <span className="bg-gray-400 text-white px-2 py-1 rounded-md">
-                        {data.enrollmentStatus}
-                      </span>
-                    ) : (
-                      <>
-                        <Link
-                          to={`/dashboard/course/${data.id}`}
-                          className="bg-blue-600 text-white relative font-medium px-2 py-1 rounded-md"
-                        >
-                          {data.enrollmentStatus}
-                          <span className="absolute -top-1.5 -right-1.5">
-                            <span className="relative flex h-3 w-3">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-300 opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-400"></span>
-                            </span>
-                          </span>
-                        </Link>{" "}
-                      </>
-                      // <>
-                      //   <button className="bg-green-400 relative font-medium px-2 py-1 rounded-md">
-                      //     {data.enrollmentStatus}
-                      //     <span className="absolute -top-1.5 -right-1.5">
-                      //       <span className="relative flex h-3 w-3">
-                      //         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-300 opacity-75"></span>
-                      //         <span className="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span>
-                      //       </span>
-                      //     </span>
-                      //   </button>
-                      // </>
-                    )}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-gray-400 text-xs text-center">
-                    enrolled students
-                  </div>
-                  <div className="mx-auto w-fit">
-                    {data.students.map(() => {
-                      const random = Math.random() * 100;
-                      return (
-                        <button
-                          onClick={() => {
-                            window.open("https://www.dhananjaay.dev");
-                          }}
-                          className={`bg-[#191d1e]  p-1.5 rounded-full -ml-3 first:ml-0 `}
-                        >
-                          <img
-                            className="rounded-full"
-                            src={`https://i.pravatar.cc/40?u={${random.toString()}}`}
-                          />
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-                <div className="text-gray-300 flex justify-between">
-                  <span>Like Count</span>
-                  <div className="flex items-center gap-2 ">
-                    <div>{data.likes}</div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      className="bi bi-heart-fill"
-                      viewBox="0 0 16 16"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
-                      />
-                    </svg>
-                  </div>
-                </div>
+        ) : (
+          <>
+            <div>
+              <div className="flex">
+                <SectionTitle title={["Search", "tutorials"]} />
+                <WindowHandler />
               </div>
-            );
-          })}
-        </div>
+              <div className="flex mt-2">
+                <input
+                  value={searchQuerry}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setSearchQuerry(value);
+                  }}
+                  placeholder="Find the best tutorials "
+                  className="w-full mr-4 bg-[#202425] rounded-lg pl-3 text-sm text-white"
+                  type="text"
+                />
+                <button
+                  onClick={() => {
+                    setFilteredData(searchQuerry);
+                  }}
+                  className="px-3 bg-[#323337] text-gray-300 py-1.5 rounded-lg"
+                >
+                  Search
+                </button>
+              </div>
+            </div>
+            <div className=" grid grid-cols-3">
+              {data
+                .filter((Couses) => {
+                  if (FilteredData != "") {
+                    const searcher = new FuzzySearch(
+                      data,
+                      ["name", "prerequisites", "instructor"],
+                      {
+                        caseSensitive: false,
+                      }
+                    );
+                    const courseID = Couses.id.toString();
+                    const result = searcher.search(FilteredData);
+                    return result.find(
+                      (d: any) => parseInt(d.id) == parseInt(courseID)
+                    );
+                  }
+                  return true;
+                })
+                .map((data, index) => {
+                  return (
+                    <div key={`${data.id}-${index}`} className="p-3 mb-4">
+                      <img
+                        className="w-full rounded-2xl h-52"
+                        alt={`Study ${data.id}`}
+                        src={data.thumbnail}
+                      />
+                      <div className="text-white text-center text-lg">
+                        {data.name}
+                      </div>
+                      <div className="text-center text-sm text-white">
+                        {data.instructor}
+                      </div>
+                      <div className="flex my-2.5 justify-between items-center">
+                        <div className="bg-gradient-to-t from-violet-400 to-blue-500 w-fit px-2 py-0.5 rounded-lg font-medium">
+                          {data.duration}
+                        </div>
+                        <div>
+                          {data.enrollmentStatus == "Closed" ||
+                          data.enrollmentStatus == "InProgress" ? (
+                            <span className="bg-gray-400 text-white px-2 py-1 rounded-md">
+                              {data.enrollmentStatus}
+                            </span>
+                          ) : (
+                            <>
+                              <Link
+                                to={`/dashboard/course/${data.id}`}
+                                className="bg-blue-600 text-white relative font-medium px-2 py-1 rounded-md"
+                              >
+                                {data.enrollmentStatus}
+                                <span className="absolute -top-1.5 -right-1.5">
+                                  <span className="relative flex h-3 w-3">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-300 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-400"></span>
+                                  </span>
+                                </span>
+                              </Link>{" "}
+                            </>
+                            // <>
+                            //   <button className="bg-green-400 relative font-medium px-2 py-1 rounded-md">
+                            //     {data.enrollmentStatus}
+                            //     <span className="absolute -top-1.5 -right-1.5">
+                            //       <span className="relative flex h-3 w-3">
+                            //         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-300 opacity-75"></span>
+                            //         <span className="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span>
+                            //       </span>
+                            //     </span>
+                            //   </button>
+                            // </>
+                          )}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-gray-400 text-xs text-center">
+                          enrolled students
+                        </div>
+                        <div className="mx-auto w-fit">
+                          {data.students.map(() => {
+                            const random = Math.random() * 100;
+                            return (
+                              <button
+                                onClick={() => {
+                                  window.open("https://www.dhananjaay.dev");
+                                }}
+                                className={`bg-[#191d1e]  p-1.5 rounded-full -ml-3 first:ml-0 `}
+                              >
+                                <img
+                                  className="rounded-full"
+                                  src={`https://i.pravatar.cc/40?u={${random.toString()}}`}
+                                />
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                      <div className="text-gray-300 flex justify-between">
+                        <span>Like Count</span>
+                        <div className="flex items-center gap-2 ">
+                          <div>{data.likes}</div>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="currentColor"
+                            className={`bi bi-heart-fill ${
+                              parseInt(data.likes) != 0
+                                ? "fill-red-400"
+                                : "fill-gray-400"
+                            }`}
+                            viewBox="0 0 16 16"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          </>
+        )}
       </section>
     </>
   );
@@ -658,188 +709,261 @@ export function APPLoaader() {
 
 export function CouseDetailScreen() {
   const Course = useLoaderData() as {
-    course: (typeof mockData)[number];
+    courseId: string;
   };
-  console.log(Course);
-  const CourseData = Course.course;
+  const { isPending, error, data } = useQuery({
+    queryKey: ["course", Course.courseId],
+    refetchInterval: 1000,
+    queryFn: () =>
+      fetch(SERVER_URL + `/course/${parseInt(Course.courseId)}`).then((res) =>
+        res.json()
+      ),
+  });
+  console.log(data);
   const dispatch = useDispatch();
   const { EnrolledCourses } = useSelector(
     (state: RootState) => state.StudentProfile
   );
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: () => {
+      return fetch(SERVER_URL + `/like/${Course.courseId}`, {
+        method: "POST",
+      });
+    },
+    onMutate: async () => {
+      await queryClient.cancelQueries({
+        queryKey: ["course", Course.courseId],
+      });
+      const previousCourse = queryClient.getQueryData([
+        "course",
+        Course.courseId,
+      ]);
+      queryClient.setQueryData(["course", Course.courseId], (old: any) => {
+        return {
+          ...old,
+          likes: old.likes + 1,
+        };
+      });
+      return { previousCourse };
+    },
+    onError: (err, newCourse, context: any) => {
+      queryClient.setQueryData(
+        ["course", Course.courseId],
+        context.previousCourse
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["course", Course.courseId],
+      });
+    },
+  });
+
   return (
-    <div className="overflow-y-auto">
-      <div className="bg-[#17181a] flex h-56 w-full p-2 rounded-lg">
-        <img
-          src="https://images.unsplash.com/photo-1503428593586-e225b39bddfe?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-          className="h-full w-auto rounded-lg"
-        />
-        <div className="overflow-hidden h-full w-full">
-          <div className="px-2 text-white  flex flex-col h-full pr-12 justify-evenly">
-            <p className="text-gray-300">{CourseData.description}</p>
-            <div className="flex justify-between">
-              <div className="text-sm flex items-center gap-2">
-                <span>
-                  Taught by{" "}
-                  <span className="underline">{CourseData.instructor}</span>
-                </span>
-                <img
-                  src="https://i.pravatar.cc/50"
-                  className="rounded-full w-8 h-8"
-                />
-              </div>
-              <div className="text-sm flex items-center gap-2">
-                <span>
-                  Mode <span className="underline">{CourseData.location}</span>
-                </span>
-              </div>
-            </div>
-            <div className="flex justify-between">
-              <div className="mt-2 flex items-end gap-3">
-                <p className=" text-xl ">Duration</p>
-                <span className="text-gray-400">{CourseData.duration}</span>
-              </div>
-              {EnrolledCourses.includes(CourseData.id) ? (
-                <>
-                  {" "}
-                  <button
-                    onClick={() => {
-                      dispatch(UnEnrollCourse(CourseData.id));
-                    }}
-                    className="bg-red-400 relative rounded-md font-medium px-2 py-1.5"
-                  >
-                    Unenroll
-                  </button>
-                </>
-              ) : (
-                <button
-                  onClick={() => {
-                    dispatch(EnrollCourse(CourseData.id));
-                  }}
-                  className="bg-blue-600  relative rounded-md font-medium px-2 py-1.5"
-                >
-                  ENROLL NOW
-                  {/* <span className="absolute -top-1.5 -right-1.5"> */}
-                  {/* <span className="relative flex h-3 w-3"> */}
-                  <span className="animate-[ping_3s_cubic-bezier(0,_0,_0.2,_1)_infinite] absolute inline-flex h-full w-full rounded-full left-0  top-0 bg-blue-300 opacity-75"></span>
-                  {/* <span className="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span> */}
-                  {/* </span> */}
-                  {/* </span> */}
-                </button>
-              )}
-            </div>
+    <>
+      {isPending ? (
+        <div>
+          <div className="animate-pulse">
+            <div className="bg-gray-600 flex h-56 w-full p-2 rounded-lg"></div>
+          </div>
+          <div className="grid gap-4 w-72 mt-12">
+            <div className="bg-gray-600 h-4  rounded-md"></div>
+            <div className="bg-gray-600 h-4 rounded-md"></div>
+            <div className="bg-gray-600 h-4 rounded-md"></div>
           </div>
         </div>
-      </div>
-      <div className="px-5">
-        <h1 className="text-2xl first-letter:font-bold  text-gray-400 first-letter:text-3xl first-letter:text-white">
-          {CourseData.name}
-        </h1>
-        <div className="relative">
-          <div className="underline mb-2 text-lg text-white mt-4">
-            Pre-requisites
-          </div>
-          <ul className="list-disc">
-            {CourseData.prerequisites.map((data) => {
-              return <li className="text-gray-400">{data}</li>;
-            })}
-          </ul>
-          <div className="absolute top-1/2 -translate-y-1/2 flex flex-col text-white items-center right-0">
-            <button>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                className="bi hover:scale-105 active:scale-150 transition-all ease-in-out bi-heart-fill fill-red-500"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
-                />
-              </svg>
-            </button>
-            <div>
-              {CourseData.likes} <span className="text-gray-400">likes</span>
-            </div>
-          </div>
-        </div>
-        <div className="">
-          <div className="underline mb-2 text-lg text-white mt-4">Syllabus</div>
-          <div className="border  rounded-md p-2">
-            <table className="w-full">
-              <thead>
-                <tr>
-                  <th className="text-left px-1 border-b text-gray-300">
-                    Week
-                  </th>
-                  <th className="text-left px-1 border-b text-gray-300">
-                    Topic
-                  </th>
-                  <th className="text-left px-1 border-b text-gray-300">
-                    Description
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {CourseData.syllabus.map((data) => {
-                  return (
-                    <tr>
-                      <td className="text-gray-400 px-1">{data.week}</td>
-                      <td className="text-gray-400 px-1">{data.topic}</td>
-                      <td className="text-gray-400 px-1">{data.content}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div className="">
-          <div className="underline mb-2 text-lg text-white mt-4">
-            Look What students have to say about this course
-          </div>
-          <div className="grid grid-cols-3 gap-4">
-            {CourseData.students.map((data) => {
-              const random = Math.random() * 100;
-              return (
-                <div className="bg-[#202425] rounded-md p-2">
-                  <div className="flex items-center gap-2">
+      ) : (
+        <div className="overflow-y-auto">
+          <div className="bg-[#17181a] flex h-56 w-full p-2 rounded-lg">
+            <img
+              src="https://images.unsplash.com/photo-1503428593586-e225b39bddfe?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              className="h-full w-auto rounded-lg"
+            />
+            <div className="overflow-hidden h-full w-full">
+              <div className="px-2 text-white  flex flex-col h-full pr-12 justify-evenly">
+                <p className="text-gray-300">{data.description}</p>
+                <div className="flex justify-between">
+                  <div className="text-sm flex items-center gap-2">
+                    <span>
+                      Taught by{" "}
+                      <span className="underline">{data.instructor}</span>
+                    </span>
                     <img
-                      src={`https://i.pravatar.cc/50?u=${random}`}
+                      src="https://i.pravatar.cc/50"
                       className="rounded-full w-8 h-8"
                     />
-                    <div className="flex flex-col text-gray-400">
-                      <span className="text-sm">{data.name}</span>
-                      <span className="text-xs">{data.email}</span>
-                    </div>
                   </div>
-                  <div className="text-gray-400 mt-2">
-                    {/* generate random text centent  using js*/}
-                    {getRandomComment()}
+                  <div className="text-sm flex items-center gap-2">
+                    <span>
+                      Mode <span className="underline">{data.location}</span>
+                    </span>
                   </div>
                 </div>
-              );
-            })}
+                <div className="flex justify-between">
+                  <div className="mt-2 flex items-end gap-3">
+                    <p className=" text-xl ">Duration</p>
+                    <span className="text-gray-400">{data.duration}</span>
+                  </div>
+                  {EnrolledCourses.includes(data.id) ? (
+                    <>
+                      {" "}
+                      <button
+                        onClick={() => {
+                          dispatch(UnEnrollCourse(data.id));
+                        }}
+                        className="bg-red-400 relative rounded-md font-medium px-2 py-1.5"
+                      >
+                        Unenroll
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        dispatch(EnrollCourse(data.id));
+                      }}
+                      className="bg-blue-600  relative rounded-md font-medium px-2 py-1.5"
+                    >
+                      ENROLL NOW
+                      {/* <span className="absolute -top-1.5 -right-1.5"> */}
+                      {/* <span className="relative flex h-3 w-3"> */}
+                      <span className="animate-[ping_3s_cubic-bezier(0,_0,_0.2,_1)_infinite] absolute inline-flex h-full w-full rounded-full left-0  top-0 bg-blue-300 opacity-75"></span>
+                      {/* <span className="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span> */}
+                      {/* </span> */}
+                      {/* </span> */}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="px-5">
+            <h1 className="text-2xl first-letter:font-bold  text-gray-400 first-letter:text-3xl first-letter:text-white">
+              {data.name}
+            </h1>
+            <div className="relative">
+              <div className="underline mb-2 text-lg text-white mt-4">
+                Pre-requisites
+              </div>
+              <ul className="list-disc">
+                {data.prerequisites.map((data) => {
+                  return <li className="text-gray-400">{data}</li>;
+                })}
+              </ul>
+              <div className="absolute top-1/2 -translate-y-1/2 flex flex-col text-white items-center right-0">
+                <button
+                  onClick={() => {
+                    // Update Likes
+                    mutation.mutate();
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    className="bi hover:scale-105 active:scale-150 transition-all ease-in-out bi-heart-fill fill-red-500"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
+                    />
+                  </svg>
+                </button>
+                <div>
+                  {data.likes} <span className="text-gray-400">likes</span>
+                </div>
+              </div>
+            </div>
+            <div className="">
+              <div className="underline mb-2 text-lg text-white mt-4">
+                Syllabus
+              </div>
+              <div className="border  rounded-md p-2">
+                <table className="w-full">
+                  <thead>
+                    <tr>
+                      <th className="text-left px-1 border-b text-gray-300">
+                        Week
+                      </th>
+                      <th className="text-left px-1 border-b text-gray-300">
+                        Topic
+                      </th>
+                      <th className="text-left px-1 border-b text-gray-300">
+                        Description
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.syllabus.map((data) => {
+                      return (
+                        <tr>
+                          <td className="text-gray-400 px-1">{data.week}</td>
+                          <td className="text-gray-400 px-1">{data.topic}</td>
+                          <td className="text-gray-400 px-1">{data.content}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div className="">
+              <div className="underline mb-2 text-lg text-white mt-4">
+                Look What students have to say about this course
+              </div>
+              <div className="grid grid-cols-3 gap-4">
+                {data.students.map((data) => {
+                  const random = Math.random() * 100;
+                  return (
+                    <div className="bg-[#202425] rounded-md p-2">
+                      <div className="flex items-center gap-2">
+                        <img
+                          src={`https://i.pravatar.cc/50?u=${random}`}
+                          className="rounded-full w-8 h-8"
+                        />
+                        <div className="flex flex-col text-gray-400">
+                          <span className="text-sm">{data.name}</span>
+                          <span className="text-xs">{data.email}</span>
+                        </div>
+                      </div>
+                      <div className="text-gray-400 mt-2">
+                        {/* generate random text centent  using js*/}
+                        {getRandomComment()}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }
 
 export function FirstPreview() {
-  const searcher = new FuzzySearch(
-    mockData,
-    ["name", "prerequisites", "instructor"],
-    {
-      caseSensitive: false,
-    }
-  );
+  // let searcher:null| = null;
 
-  const [FilteredData, setFilteredData] = useState(mockData);
+  // new FuzzySearch(
+  //   mockData,
+  //   ["name", "prerequisites", "instructor"],
+  //   {
+  //     caseSensitive: false,
+  //   }
+  // );
+
+  const { isPending, error, data } = useQuery({
+    refetchInterval: 1000,
+    queryKey: ["courseData"],
+    queryFn: () => fetch(SERVER_URL + "/course").then((res) => res.json()),
+  });
 
   const [searchQuerry, setSearchQuerry] = useState("");
+  const [FilteredData, setFilteredData] = useState("");
 
   return (
     <div className="flex-grow flex  overflow-hidden">
@@ -958,129 +1082,181 @@ export function FirstPreview() {
         </div>
       </section>
       <section className="w-1/3 px-3 overflow-y-auto">
-        <div>
-          <div className="flex">
-            <SectionTitle title={["Search", "tutorials"]} />
-            <WindowHandler />
-          </div>
-          <div className="flex mt-2">
-            <input
-              value={searchQuerry}
-              onChange={(e) => {
-                const value = e.target.value;
-                setSearchQuerry(value);
-              }}
-              placeholder="Find the best tutorials "
-              className="w-full mr-4 bg-[#202425] rounded-lg pl-3 text-sm text-white"
-              type="text"
-            />
-            <button
-              onClick={() => {
-                setFilteredData(searcher.search(searchQuerry));
-              }}
-              className="px-3 bg-[#323337] text-gray-300 py-1.5 rounded-lg"
-            >
-              Search
-            </button>
-          </div>
-        </div>
-
-        {FilteredData.map((data, index) => {
-          return (
-            <div key={`${data.id}-${index}`} className="p-3 mb-4">
-              <img
-                className="w-full rounded-2xl"
-                alt={`Study ${data.id}`}
-                src={data.thumbnail}
-              />
-              <div className="text-white text-center text-lg">{data.name}</div>
-              <div className="text-center text-sm text-white">
-                {data.instructor}
+        {isPending ? (
+          <>
+            {Array.from({
+              length: 10,
+            }).map((d) => {
+              return (
+                <div className=" border-blue-300 shadow rounded-md p-4 max-w-sm w-full mx-auto">
+                  <div className="animate-pulse flex space-x-4">
+                    <div className="rounded-full bg-slate-700 h-10 w-10"></div>
+                    <div className="flex-1 space-y-6 py-1">
+                      <div className="h-2 bg-slate-700 rounded"></div>
+                      <div className="space-y-3">
+                        <div className="grid grid-cols-3 gap-4">
+                          <div className="h-2 bg-slate-700 rounded col-span-2"></div>
+                          <div className="h-2 bg-slate-700 rounded col-span-1"></div>
+                        </div>
+                        <div className="h-2 bg-slate-700 rounded"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </>
+        ) : (
+          <>
+            {" "}
+            <div>
+              <div className="flex">
+                <SectionTitle title={["Search", "tutorials"]} />
+                <WindowHandler />
               </div>
-              <div className="flex my-2.5 justify-between items-center">
-                <div className="bg-gradient-to-t from-violet-400 to-blue-500 w-fit px-2 py-0.5 rounded-lg font-medium">
-                  {data.duration}
-                </div>
-                <div>
-                  {data.enrollmentStatus == "Closed" ||
-                  data.enrollmentStatus == "InProgress" ? (
-                    <span className="bg-gray-400 text-white px-2 py-1 rounded-md">
-                      {data.enrollmentStatus}
-                    </span>
-                  ) : (
-                    <>
-                      <Link
-                        to={`/dashboard/course/${data.id}`}
-                        className="bg-blue-600 text-white relative font-medium px-2 py-1 rounded-md"
-                      >
-                        {data.enrollmentStatus}
-                        <span className="absolute -top-1.5 -right-1.5">
-                          <span className="relative flex h-3 w-3">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-300 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-400"></span>
-                          </span>
-                        </span>
-                      </Link>{" "}
-                    </>
-                    // <>
-                    //   <button className="bg-green-400 relative font-medium px-2 py-1 rounded-md">
-                    //     {data.enrollmentStatus}
-                    //     <span className="absolute -top-1.5 -right-1.5">
-                    //       <span className="relative flex h-3 w-3">
-                    //         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-300 opacity-75"></span>
-                    //         <span className="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span>
-                    //       </span>
-                    //     </span>
-                    //   </button>
-                    // </>
-                  )}
-                </div>
-              </div>
-              <div>
-                <div className="text-gray-400 text-xs text-center">
-                  enrolled students
-                </div>
-                <div className="mx-auto w-fit">
-                  {data.students.map(() => {
-                    const random = Math.random() * 100;
-                    return (
-                      <button
-                        onClick={() => {
-                          window.open("https://www.dhananjaay.dev");
-                        }}
-                        className={`bg-[#191d1e]  p-1.5 rounded-full -ml-3 first:ml-0 `}
-                      >
-                        <img
-                          className="rounded-full"
-                          src={`https://i.pravatar.cc/40?u={${random.toString()}}`}
-                        />
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-              <div className="text-gray-300 flex justify-between">
-                <span>Like Count</span>
-                <div className="flex items-center gap-2 ">
-                  <div>{data.likes}</div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    className="bi bi-heart-fill"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
-                    />
-                  </svg>
-                </div>
+              <div className="flex mt-2">
+                <input
+                  value={searchQuerry}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setSearchQuerry(value);
+                  }}
+                  placeholder="Find the best tutorials "
+                  className="w-full mr-4 bg-[#202425] rounded-lg pl-3 text-sm text-white"
+                  type="text"
+                />
+                <button
+                  onClick={() => {
+                    setFilteredData(searchQuerry);
+                  }}
+                  className="px-3 bg-[#323337] text-gray-300 py-1.5 rounded-lg"
+                >
+                  Search
+                </button>
               </div>
             </div>
-          );
-        })}
+            {data
+              .filter((Couses) => {
+                if (FilteredData != "") {
+                  const searcher = new FuzzySearch(
+                    data,
+                    ["name", "prerequisites", "instructor"],
+                    {
+                      caseSensitive: false,
+                    }
+                  );
+                  const courseID = Couses.id.toString();
+                  const result = searcher.search(FilteredData);
+                  return result.find(
+                    (d: any) => parseInt(d.id) == parseInt(courseID)
+                  );
+                }
+                return true;
+              })
+              .map((data, index) => {
+                return (
+                  <div key={`${data.id}-${index}`} className="p-3 mb-4">
+                    <img
+                      className="w-full rounded-2xl"
+                      alt={`Study ${data.id}`}
+                      src={data.thumbnail}
+                    />
+                    <div className="text-white text-center text-lg">
+                      {data.name}
+                    </div>
+                    <div className="text-center text-sm text-white">
+                      {data.instructor}
+                    </div>
+                    <div className="flex my-2.5 justify-between items-center">
+                      <div className="bg-gradient-to-t from-violet-400 to-blue-500 w-fit px-2 py-0.5 rounded-lg font-medium">
+                        {data.duration}
+                      </div>
+                      <div>
+                        {data.enrollmentStatus == "Closed" ||
+                        data.enrollmentStatus == "InProgress" ? (
+                          <span className="bg-gray-400 text-white px-2 py-1 rounded-md">
+                            {data.enrollmentStatus}
+                          </span>
+                        ) : (
+                          <>
+                            <Link
+                              to={`/dashboard/course/${data.id}`}
+                              className="bg-blue-600 text-white relative font-medium px-2 py-1 rounded-md"
+                            >
+                              {data.enrollmentStatus}
+                              <span className="absolute -top-1.5 -right-1.5">
+                                <span className="relative flex h-3 w-3">
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-300 opacity-75"></span>
+                                  <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-400"></span>
+                                </span>
+                              </span>
+                            </Link>{" "}
+                          </>
+                          // <>
+                          //   <button className="bg-green-400 relative font-medium px-2 py-1 rounded-md">
+                          //     {data.enrollmentStatus}
+                          //     <span className="absolute -top-1.5 -right-1.5">
+                          //       <span className="relative flex h-3 w-3">
+                          //         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-300 opacity-75"></span>
+                          //         <span className="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span>
+                          //       </span>
+                          //     </span>
+                          //   </button>
+                          // </>
+                        )}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-gray-400 text-xs text-center">
+                        enrolled students
+                      </div>
+                      <div className="mx-auto w-fit">
+                        {data.students.map(() => {
+                          const random = Math.random() * 100;
+                          return (
+                            <button
+                              onClick={() => {
+                                window.open("https://www.dhananjaay.dev");
+                              }}
+                              className={`bg-[#191d1e]  p-1.5 rounded-full -ml-3 first:ml-0 `}
+                            >
+                              <img
+                                className="rounded-full"
+                                src={`https://i.pravatar.cc/40?u={${random.toString()}}`}
+                              />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    <div className="text-gray-300 flex justify-between">
+                      <span>Like Count</span>
+                      <div className="flex items-center gap-2 ">
+                        <div>{data.likes}</div>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          className={`bi bi-heart-fill ${
+                            parseInt(data.likes) != 0
+                              ? "fill-red-400"
+                              : "fill-gray-400"
+                          }`}
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+          </>
+        )}
       </section>
     </div>
   );

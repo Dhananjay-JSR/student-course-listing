@@ -8,6 +8,11 @@ import App, {
   LoadingScreen,
 } from "./App.tsx";
 import "./index.css";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from "@tanstack/react-query";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { mockData } from "./utils/MockData.ts";
@@ -57,30 +62,32 @@ const router = createBrowserRouter([
         loader: ({ params }) => {
           const courseId = params.courseId;
 
-          const course = mockData.filter(
-            (c) => c.id === parseInt(courseId ?? "0")
-          );
+          // const course = mockData.filter(
+          //   (c) => c.id === parseInt(courseId ?? "0")
+          // );
 
-          if (!course) {
-            console.error(
-              `Course with id ${parseInt(courseId ?? "0")} not found`
-            );
-            return { course: null };
-          }
+          // if (!course) {
+          //   console.error(
+          //     `Course with id ${parseInt(courseId ?? "0")} not found`
+          //   );
+          //   return { course: null };
+          // }
 
-          return { course: course[0] };
+          return { courseId };
         },
         element: <CouseDetailScreen />,
       },
     ],
   },
 ]);
-
+const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <Provider store={store}>
-      {/* <App /> */}
-      <RouterProvider router={router} />
-    </Provider>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
+        {/* <App /> */}
+        <RouterProvider router={router} />
+      </Provider>
+    </QueryClientProvider>
   </React.StrictMode>
 );

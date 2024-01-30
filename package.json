@@ -32,6 +32,7 @@
     "tsx": "^4.7.0"
   },
   "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^5.17.22",
     "@types/fuzzy-search": "^2.1.5",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",

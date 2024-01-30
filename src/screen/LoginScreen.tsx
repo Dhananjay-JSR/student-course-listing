@@ -3,16 +3,15 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ReactLogo from "../assets/react.svg";
 import { updateDetails } from "../context/reducers/ProfileSlice";
+export const ImageVariants = [
+  "https://i.pravatar.cc/50?u=selectID1",
+  "https://i.pravatar.cc/50?u=selectID2",
+  "https://i.pravatar.cc/50?u=selectID3",
+  "https://i.pravatar.cc/50?u=selectID4",
+  "https://i.pravatar.cc/50?u=selectID5",
+  "https://i.pravatar.cc/50?u=selectID6",
+] as const;
 export function LoginScreen() {
-  const ImageVariants = [
-    "https://i.pravatar.cc/50?u=selectID1",
-    "https://i.pravatar.cc/50?u=selectID2",
-    "https://i.pravatar.cc/50?u=selectID3",
-    "https://i.pravatar.cc/50?u=selectID4",
-    "https://i.pravatar.cc/50?u=selectID5",
-    "https://i.pravatar.cc/50?u=selectID6",
-  ] as const;
-
   const [selectedImage, setSelectedImage] = useState<
     (typeof ImageVariants)[number] | null
   >(null);

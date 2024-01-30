@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import type { RootState } from "../context/store";
 import NavBtn from "../components/NavBtn";
-import WindowHandler from "../components/WindowHandler";
 import { ToggleComponent } from "../components/Toggle";
 export default function Layout() {
   const location = useLocation();
@@ -20,12 +19,12 @@ export default function Layout() {
     }
   }, [location]);
 
-  const NavBarData2 = ["Lesson 1.", "Lesson 2.", "Lesson 3."] as const;
+  // const NavBarData2 = ["Lesson 1.", "Lesson 2.", "Lesson 3."] as const;
 
-  const [selectedSideBar2, setSelectedSideBar2] =
-    useState<(typeof NavBarData2)[number]>("Lesson 1.");
+  // const [selectedSideBar2, setSelectedSideBar2] =
+  //   useState<(typeof NavBarData2)[number]>("Lesson 1.");
 
-  const { FirstName, ProfImage } = useSelector(
+  const { FirstName, ProfImage, EnrolledCourses } = useSelector(
     (state: RootState) => state.StudentProfile
   );
   return (
@@ -118,7 +117,7 @@ export default function Layout() {
               </NavBtn>
             </div>
 
-            <div className=" bg-[#202425]  rounded-md py-4">
+            <div className=" bg-[#202425]  rounded-md py-4 overflow-y-auto">
               <div className="flex items-center pl-5 gap-3 text-gray-400">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -134,10 +133,39 @@ export default function Layout() {
                   />
                 </svg>
                 <span className="font-medium">
-                  Progress <span className="font-normal">75%</span>
+                  Progress <span className="font-normal">Report</span>
                 </span>
               </div>
-              <div className="grid grid-rows-3 gap-1 mt-2.5">
+              {EnrolledCourses != null &&
+                EnrolledCourses.map((data, index) => {
+                  return (
+                    <div key={data.id} className="ml-5 my-1 text-gray-400">
+                      <div className="text-sm">
+                        Course {index + 1} Completion
+                      </div>
+                      <div className="text-xs mb-1 font-medium text-right w-[75%]">
+                        {(
+                          (data.status.filter((data) => data == true).length /
+                            data.status.length) *
+                          100
+                        ).toFixed(2)}{" "}
+                        %
+                      </div>
+                      <div
+                        className="h-1 bg-gradient-to-r from-violet-400 via-green-400 to-red-400 rounded-full transition-all"
+                        style={{
+                          width: `${
+                            (data.status.filter((data) => data == true).length /
+                              data.status.length) *
+                            100 *
+                            0.75
+                          }%`,
+                        }}
+                      ></div>
+                    </div>
+                  );
+                })}
+              {/* <div className="grid grid-rows-3 gap-1 mt-2.5">
                 <NavBtn
                   comparison={selectedSideBar2 === "Lesson 1."}
                   className="text-xs py-1.5 before:from-green-300 before:via-green-100 before:to-green-700 "
@@ -162,9 +190,9 @@ export default function Layout() {
                   comparison={selectedSideBar2 === "Lesson 3."}
                   title="Lesson 3."
                 />
-              </div>
+              </div> */}
             </div>
-            <div>
+            {/* <div>
               <div className="flex items-center gap-1 mb-1">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -222,7 +250,7 @@ export default function Layout() {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="w-[calc(100%-230px)] py-4 flex flex-col px-6">
@@ -251,7 +279,7 @@ export default function Layout() {
                   Hey,{" "}
                   <span className="text-white">{FirstName ?? "untitled"}</span>
                 </span>
-                <button className="relative">
+                <Link to={"profile"} className="relative">
                   {ProfImage == null ? (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -282,7 +310,7 @@ export default function Layout() {
                       </svg>
                     </>
                   )}
-                </button>
+                </Link>
               </div>
             </div>
           </nav>

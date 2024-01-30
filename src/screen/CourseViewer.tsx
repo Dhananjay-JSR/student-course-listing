@@ -117,7 +117,9 @@ export default function CourseViewer() {
                     <p className=" text-xl ">Duration</p>
                     <span className="text-gray-400">{data.duration}</span>
                   </div>
-                  {EnrolledCourses.includes(data.id) ? (
+                  {EnrolledCourses.find(
+                    (cour) => cour.id == parseInt(Course.courseId)
+                  ) ? (
                     <>
                       {" "}
                       <button
@@ -132,7 +134,14 @@ export default function CourseViewer() {
                   ) : (
                     <button
                       onClick={() => {
-                        dispatch(EnrollCourse(data.id));
+                        dispatch(
+                          EnrollCourse({
+                            id: data.id,
+                            numberofWeeks: data.syllabus.length,
+                            duration: data.duration,
+                            encrolledDate: new Date().toLocaleDateString(),
+                          })
+                        );
                       }}
                       className="bg-blue-600  relative rounded-md font-medium px-2 py-1.5"
                     >

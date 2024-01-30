@@ -11,6 +11,7 @@ import { LoginScreen } from "./screen/LoginScreen.tsx";
 import CourseScreen from "./screen/CourseScreen.tsx";
 import CourseViewer from "./screen/CourseViewer.tsx";
 import Dashboard from "./screen/Dashboard.tsx";
+import ProfileScreen from "./screen/ProfileScreen.tsx";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Dashboard />,
+      },
+      {
+        path: "profile",
+        element: <ProfileScreen />,
       },
       {
         path: "course",

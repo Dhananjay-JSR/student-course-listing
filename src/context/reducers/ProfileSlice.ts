@@ -1,14 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { ImageVariants } from "../../screen/LoginScreen";
 
 export interface StudentProfileState {
-  ProfImage: string | null;
+  ProfImage: (typeof ImageVariants)[number] | null;
   FirstName: string | null;
   LastName: string | null;
   Email: string | null;
   Address: string | null;
   Phone: string | null;
-  EnrolledCourses: number[];
+  EnrolledCourses: {
+    duration: string;
+    encrolledDate: string;
+    id: number;
+    status: boolean[];
+  }[];
 }
 
 const initialState: StudentProfileState = {
@@ -33,19 +39,61 @@ export const studentProfileSlice = createSlice({
       state.Phone = action.payload.Phone;
       state.ProfImage = action.payload.ProfImage;
     },
-    EnrollCourse: (state, action: PayloadAction<number>) => {
+    EnrollCourse: (
+      state,
+      action: PayloadAction<{
+        id: number;
+        numberofWeeks: number;
+        duration: string;
+        encrolledDate: string;
+      }>
+    ) => {
       const PrevState = state.EnrolledCourses;
-      state.EnrolledCourses = [...PrevState, action.payload];
+
+      const NewState = [
+        ...PrevState,
+        {
+          id: action.payload.id,
+          status: Array.from({
+            length: action.payload.numberofWeeks,
+          }).map(() => false),
+          duration: action.payload.duration,
+          encrolledDate: action.payload.encrolledDate,
+        },
+      ];
+      state.EnrolledCourses = NewState;
     },
+
     UnEnrollCourse: (state, action: PayloadAction<number>) => {
       state.EnrolledCourses = state.EnrolledCourses.filter(
-        (c) => c !== action.payload
+        (course) => course.id !== action.payload
       );
+    },
+    UpdateCouseStatus(
+      state,
+      action: PayloadAction<{
+        id: number;
+        week: number;
+        status: boolean;
+      }>
+    ) {
+      const PrevState = state.EnrolledCourses;
+      const NewState = PrevState.map((course) => {
+        if (course.id === action.payload.id) {
+          course.status[action.payload.week] = action.payload.status;
+        }
+        return course;
+      });
+      state.EnrolledCourses = NewState;
     },
   },
 });
 
-export const { EnrollCourse, UnEnrollCourse, updateDetails } =
-  studentProfileSlice.actions;
+export const {
+  EnrollCourse,
+  UnEnrollCourse,
+  updateDetails,
+  UpdateCouseStatus,
+} = studentProfileSlice.actions;
 
 export default studentProfileSlice.reducer;

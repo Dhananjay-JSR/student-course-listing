@@ -3,14 +3,14 @@ import FuzzySearch from "fuzzy-search";
 import { useState } from "react";
 import SectionTitle from "../components/SectionTitle";
 import WindowHandler from "../components/WindowHandler";
-import { SERVER_URL } from "../utils/constant";
+import { REFETCH_INTERVAL, SERVER_URL } from "../utils/constant";
 import CourseSkeleton from "../components/CourseSkeleton";
 import CourseInsight from "../components/CourseInsigt";
 
 export default function CourseScreen() {
   const { isPending, data } = useQuery({
     queryKey: ["courseData"],
-    refetchInterval: 1000,
+    refetchInterval: REFETCH_INTERVAL,
     queryFn: () => fetch(SERVER_URL + "/course").then((res) => res.json()),
   });
 

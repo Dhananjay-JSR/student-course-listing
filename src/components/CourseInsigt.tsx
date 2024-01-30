@@ -15,14 +15,14 @@ export default function CourseInsight({
   };
 }) {
   return (
-    <div className="p-3 mb-4">
+    <div className="p-3 mb-4 flex flex-col justify-around">
       <img
-        className="w-full rounded-2xl h-48"
+        className="w-full rounded-2xl h-40"
         alt={`Study ${data.id}`}
         src={data.thumbnail}
       />
-      <div className="text-white text-center text-lg">{data.name}</div>
-      <div className="text-center text-sm text-white">{data.instructor}</div>
+      <div className="text-white text-center text-base">{data.name}</div>
+      <div className="text-center text-sm text-gray-400">{data.instructor}</div>
       <div className="flex my-2.5 justify-between items-center">
         <div className="bg-gradient-to-t from-violet-400 to-blue-500 w-fit px-2 py-0.5 rounded-lg font-medium">
           {data.duration}

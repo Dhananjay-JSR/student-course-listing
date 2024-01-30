@@ -2,7 +2,7 @@ export const mockData = [
   {
     id: 1,
     name: "Introduction to React Native",
-    likes: 0,
+
     courseImg: "https://source.unsplash.com/random/900×700/?study",
     instructor: "John Doe",
     description:
@@ -72,7 +72,7 @@ export const mockData = [
   {
     id: 2,
     name: "Advanced Python Programming",
-    likes: 0,
+
     courseImg: "https://source.unsplash.com/random/900×700/?study",
     instructor: "Sarah Lee",
     description:
@@ -127,7 +127,7 @@ export const mockData = [
   {
     id: 3,
     name: "Data Science Fundamentals",
-    likes: 0,
+
     courseImg:
       "https://plus.unsplash.com/premium_photo-1671069848075-c9faefe4df18?q=80&w=1973&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     instructor: "Alex Rodriguez",
@@ -187,7 +187,7 @@ export const mockData = [
   {
     id: 4,
     name: "Mobile App Design Workshop",
-    likes: 0,
+
     courseImg: "https://source.unsplash.com/random/900×700/?study",
     instructor: "Lisa Smith",
     description:
@@ -241,7 +241,7 @@ export const mockData = [
   {
     id: 5,
     name: "Machine Learning Basics",
-    likes: 0,
+
     courseImg: "https://source.unsplash.com/random/900×700/?study",
     instructor: "Michael Brown",
     description:
@@ -296,7 +296,7 @@ export const mockData = [
   {
     id: 6,
     name: "JavaScript Frameworks Masterclass",
-    likes: 0,
+
     courseImg: "https://source.unsplash.com/random/900×700/?study",
     instructor: "Emma Wilson",
     description:
@@ -355,7 +355,7 @@ export const mockData = [
   {
     id: 7,
     name: "Cybersecurity Fundamentals",
-    likes: 0,
+
     courseImg: "https://source.unsplash.com/random/900×700/?study",
     instructor: "Ryan Johnson",
     description:
@@ -410,7 +410,7 @@ export const mockData = [
   {
     id: 8,
     name: "Artificial Intelligence Applications",
-    likes: 0,
+
     courseImg: "https://source.unsplash.com/random/900×700/?study",
     instructor: "Sophia Lee",
     description:
@@ -471,7 +471,7 @@ export const mockData = [
   {
     id: 9,
     name: "Digital Marketing Essentials",
-    likes: 0,
+
     courseImg: "https://source.unsplash.com/random/900×700/?study",
     instructor: "Olivia Moore",
     description:
@@ -538,7 +538,7 @@ export const mockData = [
   {
     id: 10,
     name: "Blockchain Technology Workshop",
-    likes: 0,
+
     courseImg: "https://source.unsplash.com/random/900×700/?study",
     instructor: "Ethan Martinez",
     description:

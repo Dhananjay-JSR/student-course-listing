@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ReactLogo from "../assets/react.svg";
 import { updateDetails } from "../context/reducers/ProfileSlice";
+import { SERVER_URL } from "../utils/constant";
 export const ImageVariants = [
   "https://i.pravatar.cc/50?u=selectID1",
   "https://i.pravatar.cc/50?u=selectID2",
@@ -22,6 +23,25 @@ export function LoginScreen() {
   const [Address, setAddress] = useState("");
   const [Phone, setPhone] = useState("");
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const Response = await fetch(SERVER_URL);
+        if (!Response.ok) {
+          alert(
+            "Server is not responding ,  Check whether local server is on on port 4000"
+          );
+        }
+      } catch (e) {
+        alert(
+          "Server is not responding ,  Check whether local server is on on port 4000"
+        );
+      }
+    })();
+
+    return () => {};
+  }, []);
 
   const navigate = useNavigate();
   return (

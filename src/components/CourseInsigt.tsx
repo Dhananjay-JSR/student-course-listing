@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { MemoizedEnrolledStudent } from "./RandStudents";
 
 export default function CourseInsight({
   data,
@@ -57,20 +58,7 @@ export default function CourseInsight({
         </div>
         <div className="mx-auto w-fit">
           {data.students.map(() => {
-            const random = Math.random() * 100;
-            return (
-              <button
-                onClick={() => {
-                  window.open("https://www.dhananjaay.dev");
-                }}
-                className={`bg-[#191d1e]  p-1.5 rounded-full -ml-3 first:ml-0 `}
-              >
-                <img
-                  className="rounded-full"
-                  src={`https://i.pravatar.cc/40?u={${random.toString()}}`}
-                />
-              </button>
-            );
+            return <MemoizedEnrolledStudent />;
           })}
         </div>
       </div>

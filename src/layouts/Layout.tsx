@@ -27,7 +27,7 @@ export default function Layout() {
   const { FirstName, ProfImage, EnrolledCourses } = useSelector(
     (state: RootState) => state.StudentProfile
   );
-  const [showSideBar, setShowSideBar] = useState(true);
+  const [showSideBar, setShowSideBar] = useState(false);
   return (
     <>
       <section className="  xl:h-screen relative flex">

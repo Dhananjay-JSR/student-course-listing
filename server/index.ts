@@ -1,7 +1,7 @@
 import express from "express";
 import asyncLock from "async-lock";
 import cors from "cors";
-import { mockData } from "../src/utils/MockData";
+import { mockData } from "./DataStore";
 const App = express();
 
 App.use(cors());
@@ -14,12 +14,6 @@ let DataStore = mockData.map((d) => {
 });
 
 const lock = new asyncLock();
-
-App.get("/course", async (req, res) => {
-  setTimeout(() => {
-    res.send(DataStore);
-  }, 2000);
-});
 
 async function AddLike(id: number) {
   await lock.acquire("DataStore", async () => {
@@ -35,6 +29,12 @@ async function AddLike(id: number) {
   });
 }
 
+App.get("/course", async (req, res) => {
+  setTimeout(() => {
+    res.send(DataStore);
+  }, 2000);
+});
+
 App.get("/course/:id", (req, res) => {
   const id = parseInt(req.params.id);
   const course = DataStore.find((c) => c.id === id);
@@ -45,6 +45,10 @@ App.get("/course/:id", (req, res) => {
 
 App.post("/like/:id", async (req, res) => {
   AddLike(parseInt(req.params.id));
+  res.sendStatus(200);
+});
+
+App.get("/", (req, res) => {
   res.sendStatus(200);
 });
 

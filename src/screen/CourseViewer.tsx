@@ -4,6 +4,8 @@ import { useLoaderData } from "react-router-dom";
 import { UnEnrollCourse, EnrollCourse } from "../context/reducers/ProfileSlice";
 import { RootState } from "../context/store";
 import { REFETCH_INTERVAL, SERVER_URL } from "../utils/constant";
+import { useState } from "react";
+import React from "react";
 
 const comments = [
   "This is a great post!",
@@ -72,6 +74,8 @@ export default function CourseViewer() {
     },
   });
 
+  const [selectedWeek, setSelectedWeek] = useState<null | number>(null);
+
   return (
     <>
       {isPending ? (
@@ -87,13 +91,10 @@ export default function CourseViewer() {
         </div>
       ) : (
         <div className="overflow-y-auto">
-          <div className="bg-[#17181a] flex h-56 w-full p-2 rounded-lg">
-            <img
-              src="https://images.unsplash.com/photo-1503428593586-e225b39bddfe?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              className="h-full w-auto rounded-lg"
-            />
-            <div className="overflow-hidden h-full w-full">
-              <div className="px-2 text-white  flex flex-col h-full pr-12 justify-evenly">
+          <div className="bg-[#17181a] flex flex-col xl:flex-row  gap-5 xl:gap-0 xl:h-56 w-full p-2 rounded-lg">
+            <img src={data.thumbnail} className="h-full w-auto rounded-lg" />
+            <div className="xl:overflow-hidden xl:h-full w-full">
+              <div className="px-2 text-white gap-4 xl:gap-0 flex flex-col h-full xl:pr-12 justify-center xl:justify-evenly">
                 <p className="text-gray-300">{data.description}</p>
                 <div className="flex justify-between">
                   <div className="text-sm flex items-center gap-2">
@@ -146,14 +147,13 @@ export default function CourseViewer() {
                       className="bg-blue-600  relative rounded-md font-medium px-2 py-1.5"
                     >
                       ENROLL NOW
-                      {/* <span className="absolute -top-1.5 -right-1.5"> */}
-                      {/* <span className="relative flex h-3 w-3"> */}
-                      <span className="animate-[ping_3s_cubic-bezier(0,_0,_0.2,_1)_infinite] absolute inline-flex h-full w-full rounded-full left-0  top-0 bg-blue-300 opacity-75"></span>
-                      {/* <span className="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span> */}
-                      {/* </span> */}
-                      {/* </span> */}
+                      <span className="xl:inline-flex hidden   animate-[ping_3s_cubic-bezier(0,_0,_0.2,_1)_infinite] absolute  h-full w-full rounded-full left-0  top-0 bg-blue-300 opacity-75"></span>
                     </button>
                   )}
+                </div>
+                <div className="mt-2 flex items-end gap-3">
+                  <p className=" text-xl ">Schedule</p>
+                  <span className="text-gray-400">{data.schedule}</span>
                 </div>
               </div>
             </div>
@@ -201,7 +201,58 @@ export default function CourseViewer() {
               <div className="underline mb-2 text-lg text-white mt-4">
                 Syllabus
               </div>
-              <div className="border  rounded-md p-2">
+              {data.syllabus.map((data: any, index: number) => {
+                return (
+                  <>
+                    <button
+                      onClick={() => {
+                        if (selectedWeek == index) {
+                          setSelectedWeek(null);
+                        } else {
+                          setSelectedWeek(index);
+                        }
+                      }}
+                      className="block  w-full my-2  py-2 bg-gray-300 rounded-md"
+                    >
+                      Week {index + 1}
+                    </button>
+                    <div
+                      className="grid transition-all"
+                      style={{
+                        gridTemplateRows: selectedWeek != index ? "0fr" : "1fr",
+                      }}
+                    >
+                      <div className="overflow-hidden">
+                        <div className="border  rounded-md p-2">
+                          <table className="w-full">
+                            <thead>
+                              <tr>
+                                <th className="text-left px-1 border-b text-gray-300">
+                                  Topic
+                                </th>
+                                <th className="text-left px-1 border-b text-gray-300">
+                                  Description
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td className="text-gray-400 px-1">
+                                  {data.topic}
+                                </td>
+                                <td className="text-gray-400 px-1">
+                                  {data.content}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                );
+              })}
+              {/* <div className="border  rounded-md p-2">
                 <table className="w-full">
                   <thead>
                     <tr>
@@ -228,33 +279,15 @@ export default function CourseViewer() {
                     })}
                   </tbody>
                 </table>
-              </div>
+              </div> */}
             </div>
             <div className="">
               <div className="underline mb-2 text-lg text-white mt-4">
                 Look What students have to say about this course
               </div>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid md:grid-cols-2 xl:grid-cols-3 grid-cols-1 gap-4">
                 {data.students.map((data: any) => {
-                  const random = Math.random() * 100;
-                  return (
-                    <div className="bg-[#202425] rounded-md p-2">
-                      <div className="flex items-center gap-2">
-                        <img
-                          src={`https://i.pravatar.cc/50?u=${random}`}
-                          className="rounded-full w-8 h-8"
-                        />
-                        <div className="flex flex-col text-gray-400">
-                          <span className="text-sm">{data.name}</span>
-                          <span className="text-xs">{data.email}</span>
-                        </div>
-                      </div>
-                      <div className="text-gray-400 mt-2">
-                        {/* generate random text centent  using js*/}
-                        {getRandomComment()}
-                      </div>
-                    </div>
-                  );
+                  return <MemoizedImageGen data={data} />;
                 })}
               </div>
             </div>
@@ -264,3 +297,25 @@ export default function CourseViewer() {
     </>
   );
 }
+
+const MemoizedImageGen = React.memo(({ data }: { data: any }) => {
+  const random = Math.random() * 100;
+  return (
+    <div className="bg-[#202425] rounded-md p-2">
+      <div className="flex items-center gap-2">
+        <img
+          src={`https://i.pravatar.cc/50?u=${random}`}
+          className="rounded-full w-8 h-8"
+        />
+        <div className="flex flex-col text-gray-400">
+          <span className="text-sm">{data.name}</span>
+          <span className="text-xs">{data.email}</span>
+        </div>
+      </div>
+      <div className="text-gray-400 mt-2">
+        {/* generate random text centent  using js*/}
+        {getRandomComment()}
+      </div>
+    </div>
+  );
+});

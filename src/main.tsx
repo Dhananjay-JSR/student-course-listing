@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { mockData } from "./utils/MockData.ts";
 import { Provider } from "react-redux";
 import { store } from "./context/store.ts";
 import Layout from "./layouts/Layout.tsx";
@@ -32,9 +31,6 @@ const router = createBrowserRouter([
       },
       {
         path: "course",
-        loader: () => {
-          return { courses: mockData };
-        },
         element: <CourseScreen />,
       },
       {

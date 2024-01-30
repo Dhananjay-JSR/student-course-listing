@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { ImageVariants } from "./LoginScreen";
 import { useQueries } from "@tanstack/react-query";
 import { SERVER_URL } from "../utils/constant";
-import { mockData } from "../utils/MockData";
+
 import moment from "moment";
 import {
   UpdateCouseStatus,
@@ -83,7 +83,7 @@ export default function ProfileScreen() {
   ]);
 
   if (results.some((result) => result.isLoading)) {
-    return <div>Loading...</div>;
+    return <div className="text-white">Loading...</div>;
   }
 
   return (
@@ -223,7 +223,7 @@ export default function ProfileScreen() {
             </thead>
             <tbody>
               {EnrolledCourses.map((data, index) => {
-                const course: (typeof mockData)[0] = results.find(
+                const course: any = results.find(
                   (result) => result.data?.id == data.id
                 )?.data;
                 const enrolledDate = new Date(data.encrolledDate); // Convert to Date object

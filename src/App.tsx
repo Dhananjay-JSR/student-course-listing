@@ -377,6 +377,12 @@ function App() {
   const { FirstName, ProfImage } = useSelector(
     (state: RootState) => state.StudentProfile
   );
+
+  useEffect(() => {
+    if (FirstName == null) {
+      navigate("/");
+    }
+  }, []);
   return (
     <>
       <section className="  h-screen flex">

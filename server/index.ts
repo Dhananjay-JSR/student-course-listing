@@ -1,7 +1,10 @@
 import express from "express";
 import asyncLock from "async-lock";
+import cors from "cors";
 import { mockData } from "../src/utils/MockData";
 const App = express();
+
+App.use(cors());
 
 let DataStore = mockData.map((d) => {
   return {
@@ -12,7 +15,7 @@ let DataStore = mockData.map((d) => {
 
 const lock = new asyncLock();
 
-App.get("/", (req, res) => {
+App.get("/course", (req, res) => {
   res.json(DataStore);
 });
 
@@ -29,6 +32,12 @@ async function AddLike(id: number) {
     });
   });
 }
+
+App.get("/course/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const course = DataStore.find((c) => c.id === id);
+  res.json(course);
+});
 
 App.post("/like/:id", async (req, res) => {
   AddLike(parseInt(req.params.id));

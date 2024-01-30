@@ -87,7 +87,7 @@ export default function ProfileScreen() {
   }
 
   return (
-    <section className="overflow-y-auto">
+    <section className="xl:overflow-y-auto ">
       <div className="relative">
         <div className="h-24 w-24 mx-auto  mt-3">
           {LocalselectedImage == null ? (
@@ -123,8 +123,8 @@ export default function ProfileScreen() {
               })
             );
           }}
-          className={`bg-white absolute top-0 right-0 rounded-sm px-1 py-1 font-medium hover:brightness-90 active:brightness-75 transition-all ${
-            diffDetected ? " bg-gray-500 " : ""
+          className={`  absolute top-0 right-0 rounded-sm px-1 py-1 font-medium hover:brightness-90 active:brightness-75 transition-all ${
+            diffDetected ? " bg-gray-500 " : "bg-white"
           }`}
         >
           Save Profile
@@ -156,11 +156,11 @@ export default function ProfileScreen() {
           </div>
         )}
       </button>
-      <div className="grid grid-cols-2 gap-3 mt-4">
+      <div className="grid md:grid-cols-2 gap-3 mt-4">
         <div className="flex gap-3">
           <span className="text-gray-300 w-32"> First Name</span>
           <input
-            className="w-64 px-3 py-0.5 rounded-md bg-gray-700 text-white"
+            className="xl:w-64 w-56 px-3 py-0.5 rounded-md bg-gray-700 text-white"
             value={localFirstName ?? ""}
             onChange={(e) => {
               setLocalFirstName(e.currentTarget.value);
@@ -170,7 +170,7 @@ export default function ProfileScreen() {
         <div className="flex gap-3">
           <span className="text-gray-300 w-32"> Last Name</span>
           <input
-            className="w-64 px-3 py-0.5 rounded-md bg-gray-700 text-white"
+            className="xl:w-64 w-56 px-3 py-0.5 rounded-md bg-gray-700 text-white"
             value={localLastName ?? ""}
             onChange={(e) => {
               setLocalLastName(e.currentTarget.value);
@@ -180,7 +180,7 @@ export default function ProfileScreen() {
         <div className="flex gap-3">
           <span className="text-gray-300 w-32"> Email</span>
           <input
-            className="w-64 px-3 py-0.5 rounded-md bg-gray-700 text-white"
+            className="xl:w-64 w-56 px-3 py-0.5 rounded-md bg-gray-700 text-white"
             value={localEmail ?? ""}
             onChange={(e) => {
               setLocalEmail(e.currentTarget.value);
@@ -190,7 +190,7 @@ export default function ProfileScreen() {
         <div className="flex gap-3">
           <span className="text-gray-300 w-32"> Address</span>
           <input
-            className="w-64 px-3 py-0.5 rounded-md bg-gray-700 text-white"
+            className="xl:w-64 w-56 px-3 py-0.5 rounded-md bg-gray-700 text-white"
             value={localAddress ?? ""}
             onChange={(e) => {
               setLocalAddress(e.currentTarget.value);
@@ -200,7 +200,7 @@ export default function ProfileScreen() {
         <div className="flex gap-3">
           <span className="text-gray-300 w-32"> Phone</span>
           <input
-            className="w-64 px-3 py-0.5 rounded-md bg-gray-700 text-white"
+            className="xl:w-64 w-56 px-3 py-0.5 rounded-md bg-gray-700 text-white"
             value={localPhone ?? ""}
             onChange={(e) => {
               setLocalPhone(e.currentTarget.value);

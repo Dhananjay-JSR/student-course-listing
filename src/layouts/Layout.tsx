@@ -27,11 +27,28 @@ export default function Layout() {
   const { FirstName, ProfImage, EnrolledCourses } = useSelector(
     (state: RootState) => state.StudentProfile
   );
+  const [showSideBar, setShowSideBar] = useState(true);
   return (
     <>
-      <section className="  h-screen flex">
-        <div className="w-[230px] bg-[#17181a] min-h-screen h-full py-4 pl-6 pr-3">
-          <nav className="text-white mb-2">Trainee</nav>
+      <section className="  xl:h-screen relative flex">
+        <div
+          className={`w-[230px]  xl:shadow-none  absolute xl:static z-40 transition-all  bg-[#17181a] min-h-screen h-full py-4 pl-6 pr-3 ${
+            showSideBar
+              ? " shadow-[0_0_0_10000px_rgba(0,0,0,.5)] "
+              : "-translate-x-full xl:translate-x-0"
+          }`}
+        >
+          <nav className="text-white mb-2 flex justify-between">
+            Trainee
+            <button
+              onClick={() => {
+                setShowSideBar(!showSideBar);
+              }}
+              className="text-white xl:hidden block p-2 rounded-full border h-10 w-10"
+            >
+              X
+            </button>
+          </nav>
           <div className="flex flex-col justify-between h-[calc(100%-38px)]">
             <div className="grid grid-rows-4 bg-[#202425] gap-1 rounded-md py-2.5">
               <NavBtn
@@ -253,14 +270,14 @@ export default function Layout() {
             </div> */}
           </div>
         </div>
-        <div className="w-[calc(100%-230px)] py-4 flex flex-col px-6">
-          <nav className="text-white mb-2 w-full flex justify-between">
-            <div className="flex text-gray-300 gap-3.5">
+        <div className=" xl:w-[calc(100%-230px)] w-full  py-4 flex h-screen flex-col px-6">
+          <nav className="text-white mb-2 w-full flex flex-col-reverse xl:flex-row gap-3 xl:gap-0 justify-between">
+            <div className="flex text-gray-300 justify-around xl:justify-start gap-3.5">
               <button>Courses</button>
               <button>Tutors</button>
               <button>Offers</button>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center justify-around">
               <ToggleComponent />
               <button className="bg-[#323337]  p-1.5 rounded-full">
                 <svg
@@ -312,6 +329,26 @@ export default function Layout() {
                   )}
                 </Link>
               </div>
+              <button
+                onClick={() => {
+                  setShowSideBar(!showSideBar);
+                }}
+                className="ml-10 xl:hidden"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  className="bi bi-list"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"
+                  />
+                </svg>
+              </button>
             </div>
           </nav>
           <Outlet />

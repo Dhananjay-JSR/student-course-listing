@@ -19,8 +19,8 @@ export default function Dashboard() {
   const [FilteredData, setFilteredData] = useState("");
 
   return (
-    <div className="flex-grow flex  overflow-hidden">
-      <section className="w-2/3 px-3 overflow-y-auto flex flex-col justify-evenly">
+    <div className="flex-grow flex flex-col xl:flex-row  xl:overflow-hidden">
+      <section className="xl:w-2/3 px-3 bg-[#191d1e] xl:overflow-y-auto flex flex-col justify-evenly">
         <div className=" flex items-center gap-8">
           <SectionTitle title={["Watch", "Now"]} />
           <button>
@@ -41,7 +41,7 @@ export default function Dashboard() {
           <WindowHandler />
         </div>
         <div className="text-xs text-gray-300">Studying streams</div>
-        <div className="flex justify-between w-full mt-4">
+        <div className="xl:flex grid gap-4 xl:gap-0 grid-cols-5 justify-between w-full mt-4">
           {Array.from({
             length: 10,
           }).map(() => {
@@ -52,7 +52,7 @@ export default function Dashboard() {
                 onClick={() => {
                   window.open("https://www.dhananjaay.dev");
                 }}
-                className="bg-gradient-to-t from-violet-500 to-blue-500  p-0.5 rounded-full "
+                className="bg-gradient-to-t from-violet-500 to-blue-500 w-fit  p-0.5 rounded-full "
               >
                 <img
                   className="rounded-full"
@@ -68,7 +68,7 @@ export default function Dashboard() {
 
             <WindowHandler />
           </div>
-          <div className="mt-3.5 grid grid-cols-2 gap-4">
+          <div className="mt-3.5 grid xl:grid-cols-2 gap-4">
             <div className="">
               <div className="bg-[#202425] rounded-lg p-5">
                 <SVGOne />
@@ -138,7 +138,7 @@ export default function Dashboard() {
           </div>
         </div>
       </section>
-      <section className="w-1/3 px-3 overflow-y-auto">
+      <section className="w-1/3 px-3 xl:block hidden overflow-y-auto">
         {isPending ? (
           <>
             {Array.from({

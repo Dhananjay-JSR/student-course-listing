@@ -2,6 +2,10 @@
 
 npm run start
 
+# Video
+
+[Demonstration Video](https://youtu.be/96rV_zZ-6iA "Demonstration Video")
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

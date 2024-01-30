@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { mockData } from "./utils/MockData";
 import FuzzySearch from "fuzzy-search";
+import ReactLogo from "./assets/react.svg";
 import {
   Link,
   Outlet,
@@ -22,7 +23,283 @@ function getRandomComment() {
   const randomIndex = Math.floor(Math.random() * comments.length);
   return comments[randomIndex];
 }
+
+export function CourseData() {
+  const searcher = new FuzzySearch(
+    mockData,
+    ["name", "prerequisites", "instructor"],
+    {
+      caseSensitive: false,
+    }
+  );
+
+  const [FilteredData, setFilteredData] = useState(mockData);
+
+  const [searchQuerry, setSearchQuerry] = useState("");
+
+  return (
+    <>
+      <section className="overflow-y-auto px-4">
+        <div>
+          <div className="flex">
+            <SectionTitle title={["Search", "tutorials"]} />
+            <WindowHandler />
+          </div>
+          <div className="flex mt-2">
+            <input
+              value={searchQuerry}
+              onChange={(e) => {
+                const value = e.target.value;
+                setSearchQuerry(value);
+              }}
+              placeholder="Find the best tutorials "
+              className="w-full mr-4 bg-[#202425] rounded-lg pl-3 text-sm text-white"
+              type="text"
+            />
+            <button
+              onClick={() => {
+                setFilteredData(searcher.search(searchQuerry));
+              }}
+              className="px-3 bg-[#323337] text-gray-300 py-1.5 rounded-lg"
+            >
+              Search
+            </button>
+          </div>
+        </div>
+        <div className=" grid grid-cols-3">
+          {FilteredData.map((data, index) => {
+            return (
+              <div key={`${data.id}-${index}`} className="p-3 mb-4">
+                <img
+                  className="w-full rounded-2xl h-52"
+                  alt={`Study ${data.id}`}
+                  src={data.thumbnail}
+                />
+                <div className="text-white text-center text-lg">
+                  {data.name}
+                </div>
+                <div className="text-center text-sm text-white">
+                  {data.instructor}
+                </div>
+                <div className="flex my-2.5 justify-between items-center">
+                  <div className="bg-gradient-to-t from-violet-400 to-blue-500 w-fit px-2 py-0.5 rounded-lg font-medium">
+                    {data.duration}
+                  </div>
+                  <div>
+                    {data.enrollmentStatus == "Closed" ||
+                    data.enrollmentStatus == "InProgress" ? (
+                      <span className="bg-gray-400 text-white px-2 py-1 rounded-md">
+                        {data.enrollmentStatus}
+                      </span>
+                    ) : (
+                      <>
+                        <Link
+                          to={`/dashboard/course/${data.id}`}
+                          className="bg-blue-600 text-white relative font-medium px-2 py-1 rounded-md"
+                        >
+                          {data.enrollmentStatus}
+                          <span className="absolute -top-1.5 -right-1.5">
+                            <span className="relative flex h-3 w-3">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-300 opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-400"></span>
+                            </span>
+                          </span>
+                        </Link>{" "}
+                      </>
+                      // <>
+                      //   <button className="bg-green-400 relative font-medium px-2 py-1 rounded-md">
+                      //     {data.enrollmentStatus}
+                      //     <span className="absolute -top-1.5 -right-1.5">
+                      //       <span className="relative flex h-3 w-3">
+                      //         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-300 opacity-75"></span>
+                      //         <span className="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span>
+                      //       </span>
+                      //     </span>
+                      //   </button>
+                      // </>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-gray-400 text-xs text-center">
+                    enrolled students
+                  </div>
+                  <div className="mx-auto w-fit">
+                    {data.students.map(() => {
+                      const random = Math.random() * 100;
+                      return (
+                        <button
+                          onClick={() => {
+                            window.open("https://www.dhananjaay.dev");
+                          }}
+                          className={`bg-[#191d1e]  p-1.5 rounded-full -ml-3 first:ml-0 `}
+                        >
+                          <img
+                            className="rounded-full"
+                            src={`https://i.pravatar.cc/40?u={${random.toString()}}`}
+                          />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div className="text-gray-300 flex justify-between">
+                  <span>Like Count</span>
+                  <div className="flex items-center gap-2 ">
+                    <div>{data.likes}</div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      className="bi bi-heart-fill"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    </>
+  );
+}
 // import { mockData } from "../server/index";
+
+export function LoadingScreen() {
+  const ImageVariants = [
+    "https://i.pravatar.cc/50?u=selectID1",
+    "https://i.pravatar.cc/50?u=selectID2",
+    "https://i.pravatar.cc/50?u=selectID3",
+    "https://i.pravatar.cc/50?u=selectID4",
+    "https://i.pravatar.cc/50?u=selectID5",
+    "https://i.pravatar.cc/50?u=selectID6",
+  ] as const;
+
+  const [selectedImage, setSelectedImage] = useState<
+    (typeof ImageVariants)[number] | null
+  >(null);
+  const [showImagePicker, setShowImagePicker] = useState(false);
+  const navigate = useNavigate();
+  return (
+    <section className="  h-screen flex flex-col">
+      <nav className="text-gray-300 flex justify-between items-center bg-[#17181a] w-full border-b border-gray-300 text-right  px-3 font-mono h-fit py-2">
+        <img src={ReactLogo} />
+        <span> Course-Demy</span>
+      </nav>
+      <div className="flex-grow grid place-content-center">
+        <div className="w-72 h-96  py-4 flex flex-col justify-around items-center rounded-md bg-[#17181a]">
+          <div className="text-sm font-semibold text-gray-100">
+            Create Profile
+          </div>
+          {/* <img  /> */}
+          <div>
+            <button
+              onClick={() => {
+                setShowImagePicker(!showImagePicker);
+              }}
+              className="w-8 h-8 relative p-1 block mx-auto mb-2 border rounded-full"
+            >
+              {selectedImage == null ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor "
+                  className="bi bi-person fill-gray-400 w-full h-full"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
+                </svg>
+              ) : (
+                <img
+                  src={selectedImage}
+                  className="w-full h-full rounded-full"
+                />
+              )}
+              {showImagePicker && (
+                <div className="absolute grid grid-cols-3  left-0 grid-rows-2 w-36 gap-3 bg-[#191d1e] p-3 rounded-md ">
+                  {ImageVariants.map((data) => {
+                    return (
+                      <button
+                        className="w-8 h-8 rounded-full"
+                        onClick={() => {
+                          setSelectedImage(data);
+                          setShowImagePicker(false);
+                        }}
+                      >
+                        <img
+                          src={data}
+                          className="w-full h-full rounded-full"
+                        />
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </button>
+
+            <div
+              className={`text-sm text-gray-400 ${
+                selectedImage != null ? "invisible" : ""
+              }`}
+            >
+              <span>Pick Profile Pic</span>{" "}
+            </div>
+          </div>
+          <div>
+            <input
+              className=" bg-[#202425] rounded-sm text-gray-400 text-sm py-1.5 px-2"
+              placeholder="Enter First Name"
+            />
+          </div>
+          <div>
+            <input
+              className=" bg-[#202425] rounded-sm text-gray-400 text-sm py-1.5 px-2"
+              placeholder="Enter Last Name"
+            />
+          </div>
+          <div>
+            <input
+              type="email"
+              className=" bg-[#202425] rounded-sm text-gray-400 text-sm py-1.5 px-2"
+              placeholder="Enter Email"
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              className=" bg-[#202425] rounded-sm text-gray-400 text-sm py-1.5 px-2"
+              placeholder="Enter Address"
+            />
+          </div>
+          <div>
+            <input
+              type="tel"
+              className=" bg-[#202425] rounded-sm text-gray-400 text-sm py-1.5 px-2"
+              placeholder="Enter Phone"
+            />
+          </div>
+          <button
+            onClick={() => {
+              navigate("/dashboard");
+            }}
+            className="mt-2 bg-[#323337] text-gray-300 px-2 py-1 rounded-md hover:scale-105 active:brightness-150 active:scale-125 transition-all"
+          >
+            Register
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function App() {
   const [count, setCount] = useState(0);
   const location = useLocation();
@@ -74,6 +351,7 @@ function App() {
                 comparison={selectedSideBar === "DISCOVER"}
                 onClick={() => {
                   setSelectedSideBar("DISCOVER");
+                  navigate("/dashboard/course");
                 }}
                 title="Discover"
               >
@@ -261,7 +539,7 @@ function App() {
                 </svg>
               </button>
               <div className="flex items-center gap-6 ml-6">
-                <span className="text-gray-400">
+                <span className="text-gray-400 select-none">
                   Hey, <span className="text-white">Dhananjay</span>
                 </span>
                 <button className="relative">
@@ -303,6 +581,7 @@ export function CouseDetailScreen() {
   const Course = useLoaderData() as {
     course: (typeof mockData)[number];
   };
+  console.log(Course);
   const CourseData = Course.course;
   return (
     <div className="overflow-y-auto">
@@ -311,39 +590,41 @@ export function CouseDetailScreen() {
           src="https://images.unsplash.com/photo-1503428593586-e225b39bddfe?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           className="h-full w-auto rounded-lg"
         />
-        <div className="px-2 text-white flex flex-col justify-evenly">
-          <p className="text-gray-300">{CourseData.description}</p>
-          <div className="flex justify-between">
-            <div className="text-sm flex items-center gap-2">
-              <span>
-                Taught by{" "}
-                <span className="underline">{CourseData.instructor}</span>
-              </span>
-              <img
-                src="https://i.pravatar.cc/50"
-                className="rounded-full w-8 h-8"
-              />
+        <div className="overflow-hidden h-full w-full">
+          <div className="px-2 text-white  flex flex-col h-full pr-12 justify-evenly">
+            <p className="text-gray-300">{CourseData.description}</p>
+            <div className="flex justify-between">
+              <div className="text-sm flex items-center gap-2">
+                <span>
+                  Taught by{" "}
+                  <span className="underline">{CourseData.instructor}</span>
+                </span>
+                <img
+                  src="https://i.pravatar.cc/50"
+                  className="rounded-full w-8 h-8"
+                />
+              </div>
+              <div className="text-sm flex items-center gap-2">
+                <span>
+                  Mode <span className="underline">{CourseData.location}</span>
+                </span>
+              </div>
             </div>
-            <div className="text-sm flex items-center gap-2">
-              <span>
-                Mode <span className="underline">{CourseData.location}</span>
-              </span>
+            <div className="flex justify-between">
+              <div className="mt-2 flex items-end gap-3">
+                <p className=" text-xl ">Duration</p>
+                <span className="text-gray-400">{CourseData.duration}</span>
+              </div>
+              <button className="bg-blue-600  relative rounded-md font-medium px-2 py-1.5">
+                ENROLL NOW
+                {/* <span className="absolute -top-1.5 -right-1.5"> */}
+                {/* <span className="relative flex h-3 w-3"> */}
+                <span className="animate-[ping_3s_cubic-bezier(0,_0,_0.2,_1)_infinite] absolute inline-flex h-full w-full rounded-full left-0  top-0 bg-blue-300 opacity-75"></span>
+                {/* <span className="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span> */}
+                {/* </span> */}
+                {/* </span> */}
+              </button>
             </div>
-          </div>
-          <div className="flex justify-between">
-            <div className="mt-2 flex items-end gap-3">
-              <p className=" text-xl ">Duration</p>
-              <span className="text-gray-400">{CourseData.duration}</span>
-            </div>
-            <button className="bg-blue-600 relative rounded-md font-medium px-2 py-1.5">
-              ENROLL NOW
-              {/* <span className="absolute -top-1.5 -right-1.5"> */}
-              {/* <span className="relative flex h-3 w-3"> */}
-              <span className="animate-[ping_3s_cubic-bezier(0,_0,_0.2,_1)_infinite] absolute inline-flex h-full w-full rounded-full left-0  top-0 bg-blue-300 opacity-75"></span>
-              {/* <span className="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span> */}
-              {/* </span> */}
-              {/* </span> */}
-            </button>
           </div>
         </div>
       </div>
@@ -621,20 +902,20 @@ export function FirstPreview() {
                 <div>
                   {data.enrollmentStatus == "Closed" ||
                   data.enrollmentStatus == "InProgress" ? (
-                    <span className="bg-red-600 text-white px-2 py-1 rounded-md">
+                    <span className="bg-gray-400 text-white px-2 py-1 rounded-md">
                       {data.enrollmentStatus}
                     </span>
                   ) : (
                     <>
                       <Link
-                        to={`/course/${data.id}`}
-                        className="bg-green-400 relative font-medium px-2 py-1 rounded-md"
+                        to={`/dashboard/course/${data.id}`}
+                        className="bg-blue-600 text-white relative font-medium px-2 py-1 rounded-md"
                       >
                         {data.enrollmentStatus}
                         <span className="absolute -top-1.5 -right-1.5">
                           <span className="relative flex h-3 w-3">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-300 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span>
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-300 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-400"></span>
                           </span>
                         </span>
                       </Link>{" "}

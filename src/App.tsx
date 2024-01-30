@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 import { mockData } from "./utils/MockData";
 import FuzzySearch from "fuzzy-search";
+import {
+  Link,
+  Outlet,
+  redirect,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 const comments = [
   "This is a great post!",
   "I really enjoyed this.",
@@ -17,9 +25,19 @@ function getRandomComment() {
 // import { mockData } from "../server/index";
 function App() {
   const [count, setCount] = useState(0);
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const NavBarData = ["DASHBOARD", "DISCOVER", "MESSAGES", "SETTINGS"] as const;
+
   const [selectedSideBar, setSelectedSideBar] =
     useState<(typeof NavBarData)[number]>("DASHBOARD");
+
+  useEffect(() => {
+    if (location.pathname.includes("course")) {
+      setSelectedSideBar("DISCOVER");
+    }
+  }, [location]);
 
   const NavBarData2 = ["Lesson 1.", "Lesson 2.", "Lesson 3."] as const;
 
@@ -36,6 +54,7 @@ function App() {
                 comparison={selectedSideBar === "DASHBOARD"}
                 onClick={() => {
                   setSelectedSideBar("DASHBOARD");
+                  navigate("/dashboard");
                 }}
                 title="Dashboard"
               >
@@ -265,7 +284,8 @@ function App() {
               </div>
             </div>
           </nav>
-          <FirstPreview />
+          <Outlet />
+          {/* <FirstPreview /> */}
           {/* <CouseDetailScreen /> */}
         </div>
       </section>
@@ -273,8 +293,17 @@ function App() {
   );
 }
 
-function CouseDetailScreen() {
-  const MOCKERY = mockData[0];
+export function APPLoaader() {
+  const Location = useLocation();
+  console.log(Location);
+  return null;
+}
+
+export function CouseDetailScreen() {
+  const Course = useLoaderData() as {
+    course: (typeof mockData)[number];
+  };
+  const CourseData = Course.course;
   return (
     <div className="overflow-y-auto">
       <div className="bg-[#17181a] flex h-56 w-full p-2 rounded-lg">
@@ -283,12 +312,12 @@ function CouseDetailScreen() {
           className="h-full w-auto rounded-lg"
         />
         <div className="px-2 text-white flex flex-col justify-evenly">
-          <p className="text-gray-300">{MOCKERY.description}</p>
+          <p className="text-gray-300">{CourseData.description}</p>
           <div className="flex justify-between">
             <div className="text-sm flex items-center gap-2">
               <span>
                 Taught by{" "}
-                <span className="underline">{MOCKERY.instructor}</span>
+                <span className="underline">{CourseData.instructor}</span>
               </span>
               <img
                 src="https://i.pravatar.cc/50"
@@ -297,26 +326,37 @@ function CouseDetailScreen() {
             </div>
             <div className="text-sm flex items-center gap-2">
               <span>
-                Mode <span className="underline">{MOCKERY.location}</span>
+                Mode <span className="underline">{CourseData.location}</span>
               </span>
             </div>
           </div>
-          <div className="mt-2 flex items-end gap-3">
-            <p className=" text-xl ">Duration</p>
-            <span className="text-gray-400">{MOCKERY.duration}</span>
+          <div className="flex justify-between">
+            <div className="mt-2 flex items-end gap-3">
+              <p className=" text-xl ">Duration</p>
+              <span className="text-gray-400">{CourseData.duration}</span>
+            </div>
+            <button className="bg-blue-600 relative rounded-md font-medium px-2 py-1.5">
+              ENROLL NOW
+              {/* <span className="absolute -top-1.5 -right-1.5"> */}
+              {/* <span className="relative flex h-3 w-3"> */}
+              <span className="animate-[ping_3s_cubic-bezier(0,_0,_0.2,_1)_infinite] absolute inline-flex h-full w-full rounded-full left-0  top-0 bg-blue-300 opacity-75"></span>
+              {/* <span className="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span> */}
+              {/* </span> */}
+              {/* </span> */}
+            </button>
           </div>
         </div>
       </div>
       <div className="px-5">
         <h1 className="text-2xl first-letter:font-bold  text-gray-400 first-letter:text-3xl first-letter:text-white">
-          {MOCKERY.name}
+          {CourseData.name}
         </h1>
         <div className="relative">
           <div className="underline mb-2 text-lg text-white mt-4">
             Pre-requisites
           </div>
           <ul className="list-disc">
-            {MOCKERY.prerequisites.map((data) => {
+            {CourseData.prerequisites.map((data) => {
               return <li className="text-gray-400">{data}</li>;
             })}
           </ul>
@@ -337,7 +377,7 @@ function CouseDetailScreen() {
               </svg>
             </button>
             <div>
-              {MOCKERY.likes} <span className="text-gray-400">likes</span>
+              {CourseData.likes} <span className="text-gray-400">likes</span>
             </div>
           </div>
         </div>
@@ -359,7 +399,7 @@ function CouseDetailScreen() {
                 </tr>
               </thead>
               <tbody>
-                {MOCKERY.syllabus.map((data) => {
+                {CourseData.syllabus.map((data) => {
                   return (
                     <tr>
                       <td className="text-gray-400 px-1">{data.week}</td>
@@ -377,7 +417,7 @@ function CouseDetailScreen() {
             Look What students have to say about this course
           </div>
           <div className="grid grid-cols-3 gap-4">
-            {MOCKERY.students.map((data) => {
+            {CourseData.students.map((data) => {
               const random = Math.random() * 100;
               return (
                 <div className="bg-[#202425] rounded-md p-2">
@@ -405,7 +445,19 @@ function CouseDetailScreen() {
   );
 }
 
-function FirstPreview() {
+export function FirstPreview() {
+  const searcher = new FuzzySearch(
+    mockData,
+    ["name", "prerequisites", "instructor"],
+    {
+      caseSensitive: false,
+    }
+  );
+
+  const [FilteredData, setFilteredData] = useState(mockData);
+
+  const [searchQuerry, setSearchQuerry] = useState("");
+
   return (
     <div className="flex-grow flex  overflow-hidden">
       <section className="w-2/3 px-3 overflow-y-auto flex flex-col justify-evenly">
@@ -530,17 +582,27 @@ function FirstPreview() {
           </div>
           <div className="flex mt-2">
             <input
+              value={searchQuerry}
+              onChange={(e) => {
+                const value = e.target.value;
+                setSearchQuerry(value);
+              }}
               placeholder="Find the best tutorials "
               className="w-full mr-4 bg-[#202425] rounded-lg pl-3 text-sm text-white"
               type="text"
             />
-            <button className="px-3 bg-[#323337] text-gray-300 py-1.5 rounded-lg">
+            <button
+              onClick={() => {
+                setFilteredData(searcher.search(searchQuerry));
+              }}
+              className="px-3 bg-[#323337] text-gray-300 py-1.5 rounded-lg"
+            >
               Search
             </button>
           </div>
         </div>
 
-        {mockData.map((data, index) => {
+        {FilteredData.map((data, index) => {
           return (
             <div key={`${data.id}-${index}`} className="p-3 mb-4">
               <img
@@ -564,7 +626,10 @@ function FirstPreview() {
                     </span>
                   ) : (
                     <>
-                      <button className="bg-green-400 relative font-medium px-2 py-1 rounded-md">
+                      <Link
+                        to={`/course/${data.id}`}
+                        className="bg-green-400 relative font-medium px-2 py-1 rounded-md"
+                      >
                         {data.enrollmentStatus}
                         <span className="absolute -top-1.5 -right-1.5">
                           <span className="relative flex h-3 w-3">
@@ -572,8 +637,19 @@ function FirstPreview() {
                             <span className="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span>
                           </span>
                         </span>
-                      </button>
+                      </Link>{" "}
                     </>
+                    // <>
+                    //   <button className="bg-green-400 relative font-medium px-2 py-1 rounded-md">
+                    //     {data.enrollmentStatus}
+                    //     <span className="absolute -top-1.5 -right-1.5">
+                    //       <span className="relative flex h-3 w-3">
+                    //         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-300 opacity-75"></span>
+                    //         <span className="relative inline-flex rounded-full h-3 w-3 bg-gray-400"></span>
+                    //       </span>
+                    //     </span>
+                    //   </button>
+                    // </>
                   )}
                 </div>
               </div>

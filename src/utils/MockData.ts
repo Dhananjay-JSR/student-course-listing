@@ -361,7 +361,8 @@ export const mockData = [
     description:
       "Learn the basics of cybersecurity, including threat detection and prevention.",
     enrollmentStatus: "InProgress",
-    thumbnail: "your.cybersecurity.image",
+    thumbnail:
+      "https://images.unsplash.com/photo-1589652717521-10c0d092dea9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     duration: "6 weeks",
     schedule: "Tuesdays, 5:30 PM - 7:30 PM",
     location: "Online",

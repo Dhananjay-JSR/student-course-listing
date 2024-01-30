@@ -21,7 +21,7 @@ export default function CourseScreen() {
     <>
       <section className="overflow-y-auto px-4">
         {isPending ? (
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid xl:grid-cols-3 gap-4">
             {Array.from({
               length: 20,
             }).map(() => {
@@ -56,7 +56,7 @@ export default function CourseScreen() {
                 </button>
               </div>
             </div>
-            <div className=" grid grid-cols-3">
+            <div className=" grid xl:grid-cols-3">
               {data
                 .filter((Couses: any) => {
                   if (FilteredData != "") {
